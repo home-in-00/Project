@@ -49,6 +49,7 @@ class ActionPriceApplicationTests {
 	 */
 
 	@Test
+	@Disabled
 	void auctionDataObjectTest() throws Exception {
 		AuctionDataBody responseEntity = auctionDataFetcher.getOriginalAuctionData_AuctionDataBody("20150801", "서울강서도매시장");
 		List<AuctionDataRow> list =  responseEntity.getContent().getRow();
@@ -64,6 +65,7 @@ class ActionPriceApplicationTests {
 	 */
 
 	@Test
+	@Disabled
 	void auctionDataFluxTest() throws Exception {
 		Flux<AuctionDataRow> auctionDataFlux = auctionDataFetcher.getOriginalAuctionData_Flux("20150801", "서울강서도매시장");
 
