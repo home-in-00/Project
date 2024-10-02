@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
  * @author 임호민
  * @created 24/10/02 11:47
  * @updated 24/10/02 11:47
- * @info 변수명 주석
  */
 @Data
 @AllArgsConstructor

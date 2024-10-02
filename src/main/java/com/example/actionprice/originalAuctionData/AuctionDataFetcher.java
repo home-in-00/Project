@@ -19,17 +19,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 // TODO 이것을 활용한 비즈니스에 로직에 대한 논의 필요. 그리고 예외 처리를 매우 대충 해뒀음. 에러 대응 로직의 구체화 필요
+// TODO 이게 날짜별로 데이터 호출이라 확실히 데이터를 우리가 관리할 필요가 있겠음
 /**
 * @author 연상훈
 * @created 24/10/01 17:50
 * @updated 24/10/01 17:50
-* @param baseAuctionUrl = api를 사용하기 위한 기본 경로. 해당 값을 application.properties에서 불러옴
-* @param auctionEncodedKey = api를 사용하기 위한 기본 키(인코딩된 상태). 해당 값을 application.properties에서 불러옴
-* @param WebClient = 중복되는 객체 생성을 피하기 위해 
-* @info {api의 간편한 재사용을 위해 AuctionDataFetcher 클래스를
-* 만들어서 @Component 로 등록하여 중복되는 객체 생성을 피하고, 메모리 사용을 줄임.
-* 그리고 내장된 메서드를 통해 값을 반환함.
-* 이게 날짜별로 데이터 호출이라 확실히 데이터를 우리가 관리할 필요가 있겠음} 
+* @value : baseAuctionUrl = api를 사용하기 위한 기본 경로. 해당 값을 application.properties에서 불러옴
+* @value : auctionEncodedKey = api를 사용하기 위한 기본 키(인코딩된 상태). 해당 값을 application.properties에서 불러옴
+* @value : WebClient = 중복되는 객체 생성을 피하기 위해
+* @info api의 간편한 재사용을 위해 AuctionDataFetcher 클래스를 만들어서 @Component 로 등록하여 중복되는 객체 생성을 피하고, 메모리 사용을 줄임. 그리고 내장된 메서드를 통해 값을 반환함.
 */
 @Component
 public class AuctionDataFetcher {
@@ -50,7 +48,8 @@ public class AuctionDataFetcher {
 	 * @author 연상훈
 	 * @created 24/10/01 19:04
 	 * @updated 24/10/01 19:04
-	 * @params composeUri에 사용할 매개변수{date : 가져올 데이터의 거래일시, marketName : 가져올 데이터의 거래 장소(경매장 이름)}
+	 * @param : date = 가져올 데이터의 거래일시(composeUri에 사용할 매개변수)
+	 * @param : marketName = 가져올 데이터의 거래 장소(경매장 이름)(composeUri에 사용할 매개변수)
 	 * @info 테스트를 위해 간단하게 String 타입으로 우선 구현
 	 * @throws Exception
 	 */
@@ -72,7 +71,8 @@ public class AuctionDataFetcher {
 	 * @author 연상훈
 	 * @created 24/10/01 19:04
 	 * @updated 24/10/01 19:04
-	 * @params composeUri에 사용할 매개변수{date : 가져올 데이터의 거래일시, marketName : 가져올 데이터의 거래 장소(경매장 이름)}
+	 * @param : date = 가져올 데이터의 거래일시(composeUri에 사용할 매개변수)
+	 * @param : marketName = 가져올 데이터의 거래 장소(경매장 이름)(composeUri에 사용할 매개변수)
 	 * @throws Exception
 	 * @info api의 반환 데이터 구조에 맞춘 OriginAuctionDataBody 객체를 사용하여 비즈니스에 로직에 활용할 수 있도록 구성.
 	 * 그리고 웹 클라이언트를 사용함으로써 비동기적인 로직 수행 구현. 
@@ -99,10 +99,10 @@ public class AuctionDataFetcher {
 	 * @author 연상훈
 	 * @created 24/10/01 19:04
 	 * @updated 24/10/01 19:04
-	 * @params composeUri에 사용할 매개변수{date : 가져올 데이터의 거래일시, marketName : 가져올 데이터의 거래 장소(경매장 이름)}
+	 * @param : date = 가져올 데이터의 거래일시(composeUri에 사용할 매개변수)
+	 * @param : marketName = 가져올 데이터의 거래 장소(경매장 이름)(composeUri에 사용할 매개변수)
 	 * @throws Exception
-	 * @info api의 반환 데이터 구조에 맞춘 OriginAuctionDataBody 객체를 사용하여 비즈니스에 로직에 활용할 수 있도록 구성.
-	 * 그리고 Flux를 사용함으로써 웹클라이언트보다도 빠른 비동기적인 로직 수행 구현. 
+	 * @info api의 반환 데이터 구조에 맞춘 OriginAuctionDataBody 객체를 사용하여 비즈니스에 로직에 활용할 수 있도록 구성. 그리고 Flux를 사용함으로써 웹클라이언트보다도 빠른 비동기적인 로직 수행 구현.
 	 */
 	public Flux<AuctionDataRow> getOriginalAuctionData_Flux(String date, String marketName) throws Exception {
 
@@ -126,7 +126,8 @@ public class AuctionDataFetcher {
 	 * @param date = 가져올 데이터의 거래일시
 	 * @param marketName = 가져올 데이터의 거래 장소(경매장 이름)
 	 * @throws UnsupportedEncodingException, URISyntaxException
-	 * @info uri 구성을 위한 로직이 반복되니까 메서드로 구현하여 간략하게 함
+	 * @info uri 구성을 위한 로직이 반복되니까 메서드로 구현하여 간략하게 함. 아래는 공식제공 샘플 output. WHSAL_MRKT_NM= 의 값을 보면 인코딩한 것이 맞음
+	 * @see {http://211.237.50.150:7080/openapi/sample/xml/Grid_20151127000000000313_1/1/5?DELNG_DE=20150801&WHSAL_MRKT_NM=%EC%84%9C%EC%9A%B8%EA%B0%95%EC%84%9C%EB%8F%84%EB%A7%A4%EC%8B%9C%EC%9E%A5}
 	 */
 	private URI composeUri(String date, String marketName) throws UnsupportedEncodingException, URISyntaxException {
 		String TYPE = "json"; // json
@@ -146,10 +147,6 @@ public class AuctionDataFetcher {
                 URLEncoder.encode(WHSAL_MRKT_NM,"UTF-8")
               );
 		// format 구성하면서 검색 조건을 뒤에 추가하면 됨
-		
-		// 공식제공 샘플 output
-		// http://211.237.50.150:7080/openapi/sample/xml/Grid_20151127000000000313_1/1/5?DELNG_DE=20150801&WHSAL_MRKT_NM=%EC%84%9C%EC%9A%B8%EA%B0%95%EC%84%9C%EB%8F%84%EB%A7%A4%EC%8B%9C%EC%9E%A5
-		// WHSAL_MRKT_NM= 의 값을 보면 인코딩한 것이 맞음
 	    
 	    return new URI(url);
 	}
