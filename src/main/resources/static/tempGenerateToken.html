@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Generate Token</title>
+</head>
+<body>
+<h1>로그인하여 토큰 발행하기</h1>
+
+<form id="loginForm">
+  <label for="username">사용자 이름:</label>
+  <input type="text" id="username" name="username" required minlength="6" maxlength="20" value="useruser" disabled><br>
+
+  <label for="password">비밀번호:</label>
+  <input type="password" id="password" name="password" required minlength="8" maxlength="16" value="11111111" disabled><br>
+
+  <button type="submit">generateToken</button>
+</form>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+  document.querySelector("#loginForm").addEventListener("submit", (event) => {
+    event.preventDefault(); // 폼의 기본 제출 동작 방지
+
+    const username = document.querySelector("#username").value;
+    const password = document.querySelector("#password").value;
+    const data = { username: username, password: password };
+
+    axios.post("http://localhost:8080/generateToken", data)
+    .then(res => {
+      const accessToken = res.data.access_token;
+      const refreshToken = res.data.refresh_token;
+
+      localStorage.setItem("access_token", accessToken);
+      console.log("Access Token:", localStorage.getItem("access_token"));
+
+      localStorage.setItem("refresh_token", refreshToken);
+      console.log("Refresh Token:", localStorage.getItem("refresh_token"));
+    })
+    .catch(error => {
+      console.error("토큰 발행 오류:", error.response ? error.response.data : error.message);
+    });
+  });
+</script>
+</body>
+</html>

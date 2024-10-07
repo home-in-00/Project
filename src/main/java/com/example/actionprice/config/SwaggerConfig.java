@@ -42,7 +42,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
         return GroupedOpenApi.builder()
             .group("public")
             .packagesToScan("com.example.actionprice")
-            .pathsToMatch("/api/**") // 오류뜨면 /**
+            .pathsToMatch("/**") // 오류뜨면 /**
             .build();
     }
 

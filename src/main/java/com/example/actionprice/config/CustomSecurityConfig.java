@@ -111,8 +111,8 @@ public class CustomSecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/user/login", "/user/register", "/sendVerificationCode", "/tempGenerateToken").permitAll()
+                        .anyRequest().permitAll())
             .authenticationManager(authenticationManager)
             .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class) // LoginFilter가 내가 추가하는 필터고, UsernamePasswordAuthenticationFilter.class는 기본 내장 필터. UsernamePasswordAuthenticationFilter보다 LoginFilter를 먼저 실행시키겠다
             .addFilterBefore(tokenCheckFilter(), UsernamePasswordAuthenticationFilter.class)

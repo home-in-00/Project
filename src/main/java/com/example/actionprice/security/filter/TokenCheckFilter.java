@@ -39,6 +39,13 @@ public class TokenCheckFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
     log.info("[class] TokenCheckFilter - [method] doFilterInternal > 시작");
 
+    // 나중에 반대로 막아둘 곳만 따로 지정해서 관리
+    String requestURI = request.getRequestURI();
+    if (!requestURI.startsWith("/later/")){
+      filterChain.doFilter(request, response);
+      return;
+    }
+
     try{
       Map<String, Object> payload = validateAccessToken(request);
       log.info("Payload : " + payload);
