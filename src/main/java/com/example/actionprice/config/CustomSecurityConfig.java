@@ -18,9 +18,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-<<<<<<< HEAD
+
 import org.springframework.security.web.SecurityFilterChain;
-=======
+
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,15 +28,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
->>>>>>> origin/main
+
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-<<<<<<< HEAD
+
 import java.lang.reflect.Array;
-=======
->>>>>>> origin/main
+
 import java.util.Arrays;
 
 /**
@@ -45,13 +44,9 @@ import java.util.Arrays;
  * @updated 24/10/05 20:42
  * @info 어느 정도 개발이 완성되기 전까지는 보안을 포괄적으로 다 열어뒀음. 토큰관련 로직이 추가로 더 필요하긴 함.
  */
-<<<<<<< HEAD
 
 @EnableWebSecurity
-=======
->>>>>>> origin/main
 @Configuration
-@EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 @Log4j2
 public class CustomSecurityConfig {
@@ -78,7 +73,7 @@ public class CustomSecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-<<<<<<< HEAD
+
         http.cors()
                 .and()
                 .csrf().disable()
@@ -86,7 +81,7 @@ public class CustomSecurityConfig {
                         .requestMatchers("/public/**","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/hello/getTest")
                         .permitAll()
                         .anyRequest().authenticated());
-=======
+
 
         log.info("------------ security configuration --------------");
 
@@ -128,23 +123,10 @@ public class CustomSecurityConfig {
                     .defaultSuccessUrl("/", true)
                     .permitAll())
             .logout((logout) -> logout.logoutSuccessUrl("/user/login").permitAll());
->>>>>>> origin/main
         return http.build();
 
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 
     /**
      * @author 연상훈

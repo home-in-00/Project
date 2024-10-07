@@ -72,7 +72,7 @@ public class User {
   private Set<GrantedAuthority> authorities = new HashSet<>();
 
   // field - relationship
-  @JsonManagedReference
+  @JsonManagedReference //부모객체에서 자식객체 관리 json형태로 반환될때 이게 부모라는것을 알려줌
   @OneToMany(mappedBy = "user",
       orphanRemoval = true,
       cascade = {CascadeType.ALL},
