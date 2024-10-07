@@ -101,7 +101,10 @@ public class CustomSecurityConfig {
         LoginSuccessHandler successHandler = new LoginSuccessHandler(jwtUtil, userRepository);
 
         // Login Filter
-        LoginFilter loginFilter = new LoginFilter("/generateToken"); // "/generateToken"라는 경로를 호출하면 LoginFilter가 실행됨
+        // "/generateToken"라는 경로를 호출하면 LoginFilter가 실행됨
+        // 아직 로그인 기능을 구현하지 않았으니 토큰만 따로 발급하려고 이렇게 했지만,
+        // 로그인을 위해서는 new LoginFilter()에 들어갈 경로와 formLogin.loginProcessingUrl()에 들어갈 경로를 일치시켜야 함
+        LoginFilter loginFilter = new LoginFilter("/generateToken");
         loginFilter.setAuthenticationManager(authenticationManager);
         loginFilter.setAuthenticationSuccessHandler(successHandler);
 
@@ -120,10 +123,11 @@ public class CustomSecurityConfig {
             .rememberMe(httpSecurityRememberMeConfigurer -> {httpSecurityRememberMeConfigurer.rememberMeParameter("rememberMe")
                 .tokenRepository(persistentTokenRepository()) // persistentTokenRepository
                 .tokenValiditySeconds(60);}) // 토큰 기능의 테스트를 위해 rememberMe 기능의 토큰 유효 시간을 1분으로 설정
-            .formLogin((formLogin) -> formLogin.usernameParameter("username")
+            .formLogin((formLogin) -> formLogin.loginPage("/user/login")
+                    .usernameParameter("username")
                     .passwordParameter("password")
                     .failureUrl("/user/login") // TODO failureForwardUrl는 기존 url을 유지하면서 이동. 거기에 failureHandler를 쓰면 로그인 실패 횟수를 체크할 수 있을 것 같은데?
-                    .loginProcessingUrl("/user/login")
+                    .loginProcessingUrl("/api/user/login") // 프론트와 맞춰야 함
                     .defaultSuccessUrl("/", true)
                     .permitAll())
             .logout((logout) -> logout.logoutSuccessUrl("/user/login").permitAll());

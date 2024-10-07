@@ -2,10 +2,8 @@ package com.example.actionprice.security.filter;
 
 import com.example.actionprice.user.forms.UserLoginForm;
 import com.google.gson.Gson;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import lombok.extern.log4j.Log4j2;
