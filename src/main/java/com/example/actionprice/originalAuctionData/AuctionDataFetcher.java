@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.example.actionprice.originalAuctionData.apiRequestObj.AuctionDataBody;
 import com.example.actionprice.originalAuctionData.apiRequestObj.AuctionDataRow;
 
+import reactor.core.CoreSubscriber;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -119,9 +120,16 @@ public class AuctionDataFetcher {
 	            .accept(MediaType.APPLICATION_JSON)
 	            .retrieve()
 	            .bodyToMono(AuctionDataBody.class)
+<<<<<<< HEAD
 	            .onErrorResume(e -> {
                     return Mono.empty();
                 }) // 에러에 대한 대응 로직
+=======
+//	            .onErrorResume(e -> {
+//					e.printStackTrace();
+//                    return Mono.empty();
+//                }) // 에러에 대한 대응 로직
+>>>>>>> origin/main
 	            .flatMapMany(body -> Flux.fromIterable(body.getContent().getRow()));
 	}
 
