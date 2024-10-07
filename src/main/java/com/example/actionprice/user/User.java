@@ -57,8 +57,7 @@ public class User {
   @Size(min = 6, max=20)
   private String username;
 
-  @Column(nullable=false)
-  @Size(min = 8, max=16)
+  @Column(nullable=false, name = "password")
   private String password;
 
   @Column(nullable=false, unique=true)
@@ -69,6 +68,7 @@ public class User {
   private String refreshToken;
 
   @ElementCollection(fetch = FetchType.EAGER)
+  @Builder.Default
   private Set<GrantedAuthority> authorities = new HashSet<>();
 
   // field - relationship

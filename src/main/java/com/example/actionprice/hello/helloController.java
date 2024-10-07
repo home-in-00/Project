@@ -1,5 +1,10 @@
 package com.example.actionprice.hello;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,11 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/hello") 
+@RequestMapping("/")
 public class helloController {
+
+    @Autowired
+    private ResourceLoader resourceLoader;
     
     @GetMapping("/getTest")
     public ResponseEntity<String> getTest() {
         return ResponseEntity.ok("Test successful");
     }
+
 }

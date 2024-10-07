@@ -63,6 +63,7 @@ public class Post extends BaseEntity implements Comparable<Post> {
   private String content;
 
   @Column
+  @Builder.Default
   private boolean published = true;
 
   // LocalDateTime createdAt | from BaseEntity | auto generation
