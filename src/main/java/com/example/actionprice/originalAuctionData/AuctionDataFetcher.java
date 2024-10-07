@@ -52,6 +52,7 @@ public class AuctionDataFetcher {
 	 * @param : date = 가져올 데이터의 거래일시(composeUri에 사용할 매개변수)
 	 * @param : marketName = 가져올 데이터의 거래 장소(경매장 이름)(composeUri에 사용할 매개변수)
 	 * @info 테스트를 위해 간단하게 String 타입으로 우선 구현
+	 * @getOriginalAuctionData_AuctionDataBody 요청 타입이 json인지 파악
 	 * @throws Exception
 	 */
 	public ResponseEntity<String> getOriginalAuctionData_String(String date, String marketName) throws Exception {
@@ -76,8 +77,11 @@ public class AuctionDataFetcher {
 	 * @param : marketName = 가져올 데이터의 거래 장소(경매장 이름)(composeUri에 사용할 매개변수)
 	 * @throws Exception
 	 * @info api의 반환 데이터 구조에 맞춘 OriginAuctionDataBody 객체를 사용하여 비즈니스에 로직에 활용할 수 있도록 구성.
+	 *
 	 * 그리고 웹 클라이언트를 사용함으로써 비동기적인 로직 수행 구현. 
 	 */
+
+
 	public AuctionDataBody getOriginalAuctionData_AuctionDataBody(String date, String marketName) throws Exception {
 
 	    URI uri = composeUri(date, marketName);
