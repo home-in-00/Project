@@ -118,11 +118,11 @@ public class AuctionDataFetcher {
 	            .accept(MediaType.APPLICATION_JSON)
 	            .retrieve()
 	            .bodyToMono(AuctionDataBody.class)
-<<<<<<< HEAD
+
 	            .onErrorResume(e -> {
                     return Mono.empty();
                 }) // 에러에 대한 대응 로직
-=======
+
 //	            .onErrorResume(e -> {
 //					e.printStackTrace();
 //                    return Mono.empty();
