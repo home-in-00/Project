@@ -96,7 +96,7 @@ public class UserController {
     userService.createUser(form);
     // 그리고 "/user/login"로 리다이렉트
     return ResponseEntity.status(HttpStatus.FOUND)
-        .location(URI.create("/user/login"))
+        .location(URI.create("/api/user/login"))
         .build();
   }
 

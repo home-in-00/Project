@@ -23,14 +23,20 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User createUser(UserRegisterForm userRegisterForm) {
+    log.info("--------------- [UserService] createUser ----------------");
+    log.info("userRegisterForm: " + userRegisterForm);
+
     String inputed_username = userRegisterForm.getUsername();
+    log.info("inputed_username: " + inputed_username);
     User existing_user = userRepository.findById(inputed_username).orElse(null);
 
     // 이미 존재하는 유저라면
     if(existing_user != null) {
+      log.info(existing_user.getUsername() + " already exists");
       return existing_user; // exception이나 뭐로 던져버릴까? 그냥 반환하는 건 좀 이상한데
     }
 
+    log.info(userRegisterForm.getUsername() + " is new user");
     // user 구성
     User newUser = User.builder()
         .username(userRegisterForm.getUsername())
@@ -43,6 +49,8 @@ public class UserServiceImpl implements UserService {
 
     // 저장
     userRepository.save(newUser);
+
+    log.info(newUser.getUsername() + "register successful");
 
     return newUser;
   }

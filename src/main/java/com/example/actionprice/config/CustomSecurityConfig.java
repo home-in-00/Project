@@ -101,10 +101,7 @@ public class CustomSecurityConfig {
         LoginSuccessHandler successHandler = new LoginSuccessHandler(jwtUtil, userRepository);
 
         // Login Filter
-        // "/generateToken"라는 경로를 호출하면 LoginFilter가 실행됨
-        // 아직 로그인 기능을 구현하지 않았으니 토큰만 따로 발급하려고 이렇게 했지만,
-        // 로그인을 위해서는 new LoginFilter()에 들어갈 경로와 formLogin.loginProcessingUrl()에 들어갈 경로를 일치시켜야 함
-        LoginFilter loginFilter = new LoginFilter("/generateToken");
+        LoginFilter loginFilter = new LoginFilter("/api/user/login");
         loginFilter.setAuthenticationManager(authenticationManager);
         loginFilter.setAuthenticationSuccessHandler(successHandler);
 

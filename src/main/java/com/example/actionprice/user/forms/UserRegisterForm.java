@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author : 연상훈
@@ -16,6 +17,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 public class UserRegisterForm {
 
   @NotBlank(message = "사용자 이름은 필수입니다.", groups = {SendVerificationCodeGroup.class, CheckVerificationCodeGroup.class})
