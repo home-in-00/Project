@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @see : 단순한 페이지 이동 기능만 구현하였습니다.
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 @Log4j2
 @RequiredArgsConstructor
 public class UserController {
@@ -109,13 +109,13 @@ public class UserController {
    * 검증 그룹으로 SendVerificationCodeGroup을 사용합니다.
    */
   @PostMapping(value = "/sendVerificationCode", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<String> sendVerificationCode(@Validated(SendVerificationCodeGroup.class) @RequestBody UserRegisterForm form, BindingResult bindingResult){
+  public ResponseEntity<String> sendVerificationCode(@Validated(SendVerificationCodeGroup.class) @RequestBody UserRegisterForm userRegisterForm, BindingResult bindingResult){
     // 이메일 유효성 검사 후 처리
     if (bindingResult.hasErrors()) {
       return ResponseEntity.badRequest().body(bindingResult.getFieldError().getDefaultMessage());
     }
 
-    String email = form.getEmail();
+    String email = userRegisterForm.getEmail();
     String resultOfSending = sendEmailService.sendVerificationEmail(email);
     return ResponseEntity.ok(resultOfSending);
   }
