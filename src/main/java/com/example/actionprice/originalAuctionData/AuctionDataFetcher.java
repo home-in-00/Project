@@ -2,6 +2,7 @@ package com.example.actionprice.originalAuctionData;
 
 import java.net.URLEncoder;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ import java.net.URISyntaxException;
 * @value : WebClient = 중복되는 객체 생성을 피하기 위해
 * @info api의 간편한 재사용을 위해 AuctionDataFetcher 클래스를 만들어서 @Component 로 등록하여 중복되는 객체 생성을 피하고, 메모리 사용을 줄임. 그리고 내장된 메서드를 통해 값을 반환함.
 */
+@Data
 @Component
 public class AuctionDataFetcher {
 	
@@ -88,9 +90,9 @@ public class AuctionDataFetcher {
 	            .accept(MediaType.APPLICATION_JSON)
 	            .retrieve()
 	            .bodyToMono(AuctionDataBody.class)
-//	            .onErrorResume(e -> {                  
-//              return Mono.empty();
-//          }) 에러에 대한 대응 로직
+	            .onErrorResume(e -> {
+           		 return Mono.empty();
+          }) //에러에 대한 대응 로직
 	            .block();
 	    
 	    return auctionDataBody;
@@ -114,13 +116,20 @@ public class AuctionDataFetcher {
 	            .accept(MediaType.APPLICATION_JSON)
 	            .retrieve()
 	            .bodyToMono(AuctionDataBody.class)
+<<<<<<< HEAD
 //	            .onErrorResume(e -> {
 //					e.printStackTrace();
 //                    return Mono.empty();
 //                }) // 에러에 대한 대응 로직
+=======
+	            .onErrorResume(e -> {
+                    return Mono.empty();
+                }) // 에러에 대한 대응 로직
+>>>>>>> 55612af (테이블 생성 완료)
 	            .flatMapMany(body -> Flux.fromIterable(body.getContent().getRow()));
 	}
-	
+
+
 	/**
 	 * @author 연상훈
 	 * @created 24/10/01 20:26
@@ -137,7 +146,7 @@ public class AuctionDataFetcher {
 	    int END_INDEX = 5; // 설명이 따로 없음. 받아올 페이지 번호인 듯?
 	    String DELNG_DE = date; // 기록을 검색할 날짜
 	    String WHSAL_MRKT_NM = marketName; // 어느 도매장에서의 기록인지 검색
-	    
+
 	    String url = String.format(
                 "%s/%s/%s/Grid_20151127000000000311_1/%s/%s?DELNG_DE=%s&WHSAL_MRKT_NM=%s",
                 baseAuctionUrl,
@@ -149,8 +158,8 @@ public class AuctionDataFetcher {
                 URLEncoder.encode(WHSAL_MRKT_NM,"UTF-8")
               );
 		// format 구성하면서 검색 조건을 뒤에 추가하면 됨
-	    
+
 	    return new URI(url);
 	}
-
 }
+
