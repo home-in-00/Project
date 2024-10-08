@@ -120,16 +120,16 @@ public class AuctionDataFetcher {
 	            .accept(MediaType.APPLICATION_JSON)
 	            .retrieve()
 	            .bodyToMono(AuctionDataBody.class)
-<<<<<<< HEAD
+
 //	            .onErrorResume(e -> {
 //					e.printStackTrace();
 //                    return Mono.empty();
 //                }) // 에러에 대한 대응 로직
-=======
+
 	            .onErrorResume(e -> {
                     return Mono.empty();
                 }) // 에러에 대한 대응 로직
->>>>>>> 55612af (테이블 생성 완료)
+
 	            .flatMapMany(body -> Flux.fromIterable(body.getContent().getRow()));
 	}
 
