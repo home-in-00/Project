@@ -2,6 +2,7 @@ package com.example.actionprice.originalAuctionData;
 
 import java.net.URLEncoder;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -77,8 +78,7 @@ public class AuctionDataFetcher {
 	 * @param : marketName = 가져올 데이터의 거래 장소(경매장 이름)(composeUri에 사용할 매개변수)
 	 * @throws Exception
 	 * @info api의 반환 데이터 구조에 맞춘 OriginAuctionDataBody 객체를 사용하여 비즈니스에 로직에 활용할 수 있도록 구성.
-	 *
-	 * 그리고 웹 클라이언트를 사용함으로써 비동기적인 로직 수행 구현.
+	 * 그리고 웹 클라이언트를 사용함으로써 비동기적인 로직 수행 구현. 
 	 */
 
 
@@ -92,9 +92,9 @@ public class AuctionDataFetcher {
 	            .accept(MediaType.APPLICATION_JSON)
 	            .retrieve()
 	            .bodyToMono(AuctionDataBody.class)
-//	            .onErrorResume(e -> {                  
-//              return Mono.empty();
-//          }) 에러에 대한 대응 로직
+	            .onErrorResume(e -> {
+           		 return Mono.empty();
+          }) //에러에 대한 대응 로직
 	            .block();
 	    
 	    return auctionDataBody;
@@ -118,13 +118,19 @@ public class AuctionDataFetcher {
 	            .accept(MediaType.APPLICATION_JSON)
 	            .retrieve()
 	            .bodyToMono(AuctionDataBody.class)
+<<<<<<< HEAD
+	            .onErrorResume(e -> {
+                    return Mono.empty();
+                }) // 에러에 대한 대응 로직
+=======
 //	            .onErrorResume(e -> {
 //					e.printStackTrace();
 //                    return Mono.empty();
 //                }) // 에러에 대한 대응 로직
 	            .flatMapMany(body -> Flux.fromIterable(body.getContent().getRow()));
 	}
-	
+
+
 	/**
 	 * @author 연상훈
 	 * @created 24/10/01 20:26
@@ -141,7 +147,7 @@ public class AuctionDataFetcher {
 	    int END_INDEX = 5; // 설명이 따로 없음. 받아올 페이지 번호인 듯?
 	    String DELNG_DE = date; // 기록을 검색할 날짜
 	    String WHSAL_MRKT_NM = marketName; // 어느 도매장에서의 기록인지 검색
-	    
+
 	    String url = String.format(
                 "%s/%s/%s/Grid_20151127000000000311_1/%s/%s?DELNG_DE=%s&WHSAL_MRKT_NM=%s",
                 baseAuctionUrl,
