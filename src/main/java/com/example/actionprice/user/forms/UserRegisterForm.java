@@ -20,8 +20,8 @@ import lombok.ToString;
 @ToString
 public class UserRegisterForm {
 
-  @NotBlank(message = "사용자 이름은 필수입니다.", groups = {CheckForDuplicateUsernameGroup.class ,SendVerificationCodeGroup.class, CheckVerificationCodeGroup.class})
-  @Size(min = 6, max = 20, message = "사용자 이름은 6자 이상 20자 이하여야 합니다.", groups = {SendVerificationCodeGroup.class, CheckVerificationCodeGroup.class})
+  @NotBlank(message = "사용자 이름은 필수입니다.", groups = {CheckForDuplicateUsernameGroup.class, SendVerificationCodeGroup.class, CheckVerificationCodeGroup.class})
+  @Size(min = 6, max = 20, message = "사용자 이름은 6자 이상 20자 이하여야 합니다.", groups = {CheckForDuplicateUsernameGroup.class, SendVerificationCodeGroup.class, CheckVerificationCodeGroup.class})
   private String username;
 
   @NotBlank(message = "비밀번호는 필수입니다.", groups = {SendVerificationCodeGroup.class, CheckVerificationCodeGroup.class})

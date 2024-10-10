@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public boolean checkUserExists(String username) {
 
-    log.info("--------------- [UserService] createUser ----------------");
+    log.info("--------------- [UserService] checkUserExists ----------------");
 
     log.info("inputed_username: " + username);
     User existing_user = userRepository.findById(username).orElse(null);

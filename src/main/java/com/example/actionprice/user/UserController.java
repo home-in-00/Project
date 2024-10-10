@@ -179,8 +179,11 @@ public class UserController {
   @PostMapping(value = "/checkForDuplicateUsername", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> checkForDuplicateUsername(@Validated(CheckForDuplicateUsernameGroup.class) @RequestBody UserRegisterForm form, BindingResult bindingResult){
 
+    log.info("[class] UserController - [method] checkForDuplicateUsername - operate");
+
     // 아이디 중복 체크 유효성 검사
     if (bindingResult.hasErrors()) {
+      log.info("[class] UserController - [method] checkForDuplicateUsername - validate err");
       return ResponseEntity.badRequest().body(bindingResult.getFieldError().getDefaultMessage());
     }
 
@@ -188,9 +191,11 @@ public class UserController {
 
     // userService.checkUserExists()는 존재하면 true, 존재하지 않으면 false 반환
     if (useranme_already_exist) {
+      log.info("[class] UserController - [method] checkForDuplicateUsername - Username already exists");
       return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
     }
 
+    log.info("[class] UserController - [method] checkForDuplicateUsername - new username");
     return ResponseEntity.ok("Username is available");
   }
 
