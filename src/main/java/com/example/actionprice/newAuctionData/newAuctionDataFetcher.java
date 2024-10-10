@@ -52,7 +52,6 @@ public class newAuctionDataFetcher
         String apiType = "json"; // json
         String saleDate = date; // 기록을 검색할 날짜
 
-
         String url = String.format(
                 "%s?newauctionEncodedKey=%s&apiType=%s&&saleDate=%s",
                 basenewAuctionUrl,
