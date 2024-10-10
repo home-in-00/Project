@@ -2,7 +2,7 @@ package com.example.actionprice.user;
 
 import com.example.actionprice.sendEmail.SendEmailService;
 import com.example.actionprice.user.forms.UserRegisterForm;
-import com.example.actionprice.user.forms.UserRegisterForm.CheckForDuplicateUseranmeGroup;
+import com.example.actionprice.user.forms.UserRegisterForm.CheckForDuplicateUsernameGroup;
 import com.example.actionprice.user.forms.UserRegisterForm.CheckVerificationCodeGroup;
 import com.example.actionprice.user.forms.UserRegisterForm.SendVerificationCodeGroup;
 import jakarta.validation.Valid;
@@ -170,11 +170,14 @@ public class UserController {
   /**
    * @author 연상훈
    * @created 2024-10-10 오전 11:16
-   * @updated 2024-10-10 오전 11:16
-   * @see : 검증그룹으로 CheckForDuplicateUseranmeGroup 사용
+   * @updated 2024-10-10 오후 16:31
+   * @endPoint : /api/user/checkForDuplicateUsername
+   * @see :
+   * 검증그룹으로 CheckForDuplicateUsernameGroup 사용
+   * 이곳은 register와 달리 에러 처리 없이 그대로 감
    */
-  @PostMapping(value = "/checkForDuplicateUseranme", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<String> checkForDuplicateUseranme(@Validated(CheckForDuplicateUseranmeGroup.class) @RequestBody UserRegisterForm form, BindingResult bindingResult){
+  @PostMapping(value = "/checkForDuplicateUsername", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<String> checkForDuplicateUsername(@Validated(CheckForDuplicateUsernameGroup.class) @RequestBody UserRegisterForm form, BindingResult bindingResult){
 
     // 아이디 중복 체크 유효성 검사
     if (bindingResult.hasErrors()) {

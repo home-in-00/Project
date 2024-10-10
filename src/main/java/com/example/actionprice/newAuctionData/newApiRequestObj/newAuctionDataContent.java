@@ -1,13 +1,10 @@
-package com.example.actionprice.newAuctionData;
+package com.example.actionprice.newAuctionData.newApiRequestObj;
 
 
-import com.example.actionprice.originalAuctionData.apiRequestObj.AuctionDataResultOfReq;
-import com.example.actionprice.originalAuctionData.apiRequestObj.AuctionDataRow;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
 import java.util.List;
 

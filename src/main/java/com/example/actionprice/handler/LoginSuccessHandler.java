@@ -1,10 +1,8 @@
 package com.example.actionprice.handler;
 
-import com.example.actionprice.user.User;
 import com.example.actionprice.user.UserRepository;
 import com.example.actionprice.util.JWTUtil;
 import com.google.gson.Gson;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -13,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 // TODO admin 페이지 만들고, 블랙리스트 관리하기
@@ -67,7 +64,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     Gson gson = new Gson();
 
-    Map<String, String> keyMap = Map.of("access_token", accessToken,"refresh_token", refreshToken); // map 형태로 토큰 정보를 저장
+    Map<String, String> keyMap = Map.of("access_token", accessToken,"refresh_token", refreshToken, "username", authentication.getName()); // map 형태로 토큰 정보를 저장
 
     String jsonStr = gson.toJson(keyMap); // json에 토큰 정보를 전달
 

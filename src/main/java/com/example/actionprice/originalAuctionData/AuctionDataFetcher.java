@@ -2,7 +2,6 @@ package com.example.actionprice.originalAuctionData;
 
 import java.net.URLEncoder;
 
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,17 +30,17 @@ import java.net.URISyntaxException;
 * @value : WebClient = 중복되는 객체 생성을 피하기 위해
 * @info api의 간편한 재사용을 위해 AuctionDataFetcher 클래스를 만들어서 @Component 로 등록하여 중복되는 객체 생성을 피하고, 메모리 사용을 줄임. 그리고 내장된 메서드를 통해 값을 반환함.
 */
-@Data
 @Component
 public class AuctionDataFetcher {
-	
+
 	@Value("${auctionData.url}")
 	String baseAuctionUrl;
 	
 	@Value("${auctionData.encodedKey}")
 	String auctionEncodedKey;
-	
+
 	private final WebClient webClient;
+
 
 	public AuctionDataFetcher() {
 		this.webClient = WebClient.builder().build();
@@ -80,7 +79,7 @@ public class AuctionDataFetcher {
 	 * @throws Exception
 	 * @info api의 반환 데이터 구조에 맞춘 OriginAuctionDataBody 객체를 사용하여 비즈니스에 로직에 활용할 수 있도록 구성.
 	 *
-	 * 그리고 웹 클라이언트를 사용함으로써 비동기적인 로직 수행 구현. 
+	 * 그리고 웹 클라이언트를 사용함으로써 비동기적인 로직 수행 구현.
 	 */
 
 
@@ -94,9 +93,9 @@ public class AuctionDataFetcher {
 	            .accept(MediaType.APPLICATION_JSON)
 	            .retrieve()
 	            .bodyToMono(AuctionDataBody.class)
-	            .onErrorResume(e -> {
-           		 return Mono.empty();
-          }) //에러에 대한 대응 로직
+//	            .onErrorResume(e -> {
+//              return Mono.empty();
+//          }) 에러에 대한 대응 로직
 	            .block();
 	    
 	    return auctionDataBody;
@@ -120,20 +119,13 @@ public class AuctionDataFetcher {
 	            .accept(MediaType.APPLICATION_JSON)
 	            .retrieve()
 	            .bodyToMono(AuctionDataBody.class)
-
 //	            .onErrorResume(e -> {
 //					e.printStackTrace();
 //                    return Mono.empty();
 //                }) // 에러에 대한 대응 로직
-
-	            .onErrorResume(e -> {
-                    return Mono.empty();
-                }) // 에러에 대한 대응 로직
-
 	            .flatMapMany(body -> Flux.fromIterable(body.getContent().getRow()));
 	}
-
-
+	
 	/**
 	 * @author 연상훈
 	 * @created 24/10/01 20:26
@@ -157,6 +149,7 @@ public class AuctionDataFetcher {
                 auctionEncodedKey,
                 TYPE,
                 START_INDEX,
+
                 END_INDEX,
                 DELNG_DE,
                 URLEncoder.encode(WHSAL_MRKT_NM,"UTF-8")
@@ -165,5 +158,5 @@ public class AuctionDataFetcher {
 
 	    return new URI(url);
 	}
-}
 
+}
