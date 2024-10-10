@@ -13,6 +13,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+// TODO exception 처리를 구체화할 필요가 있음
 /**
  * @author : 연상훈
  * @created : 2024-10-06 오후 2:12
@@ -39,7 +40,6 @@ public class JWTUtil {
    * 되도록 rememberMe 시간하고 맞춰야 함
    */
   public String generateToken(Map<String, Object> valueMap, int time) {
-    log.info("generateKey : " + secretKey);
 
     // 헤더
     Map<String, Object> headers = new HashMap<>();

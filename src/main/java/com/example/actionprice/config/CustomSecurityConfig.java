@@ -111,20 +111,28 @@ public class CustomSecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/api/user/login", "/api/user/register", "/sendVerificationCode", "/tempGenerateToken").permitAll()
-                        .anyRequest().permitAll())
+                        .requestMatchers(
+                                "/",
+                                "/api/user/login",
+                                "/api/user/logout",
+                                "/api/user/register",
+                                "/api/user/sendVerificationCode",
+                                "/api/user/checkVerificationCode",
+                                "/api/user/generate/refreshToken"
+                        ).permitAll()
+                        .anyRequest().authenticated())
             .authenticationManager(authenticationManager)
             .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class) // LoginFilter가 내가 추가하는 필터고, UsernamePasswordAuthenticationFilter.class는 기본 내장 필터. UsernamePasswordAuthenticationFilter보다 LoginFilter를 먼저 실행시키겠다
             .addFilterBefore(tokenCheckFilter(), UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil), TokenCheckFilter.class)
+            .addFilterBefore(new RefreshTokenFilter("/api/user/generate/refreshToken", jwtUtil), TokenCheckFilter.class)
             .rememberMe(httpSecurityRememberMeConfigurer -> {httpSecurityRememberMeConfigurer.rememberMeParameter("rememberMe")
                 .tokenRepository(persistentTokenRepository()) // persistentTokenRepository
-                .tokenValiditySeconds(60);}) // 토큰 기능의 테스트를 위해 rememberMe 기능의 토큰 유효 시간을 1분으로 설정
+                .tokenValiditySeconds(3600);})
             .formLogin((formLogin) -> formLogin.loginPage("/api/user/login")
                     .usernameParameter("username")
                     .passwordParameter("password")
                     .failureUrl("/api/user/login") // TODO failureForwardUrl는 기존 url을 유지하면서 이동. 거기에 failureHandler를 쓰면 로그인 실패 횟수를 체크할 수 있을 것 같은데?
-                    .loginProcessingUrl("/api/user/login") // 프론트와 맞춰야 함
+                    .loginProcessingUrl("/api/user/login")
                     .defaultSuccessUrl("/", true)
                     .permitAll())
             .logout((logout) -> logout.logoutSuccessUrl("/api/user/login").permitAll());
@@ -170,6 +178,7 @@ public class CustomSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // TokenCheckFilter 설정을 위한 메서드
     private TokenCheckFilter tokenCheckFilter(){
         return new TokenCheckFilter(userDetailsService, jwtUtil);
     }

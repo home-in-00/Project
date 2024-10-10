@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// TODO exception 처리를 구체화할 필요가 있음
 /**
  * @author : 연상훈
  * @created : 2024-10-05 오후 10:52
@@ -80,7 +81,7 @@ public class UserController {
    * 회원가입 기능
    * @author : 연상훈
    * @created : 2024-10-06 오후 8:26
-   * @updated : 2024-10-06 오후 8:26
+   * @updated : 2024-10-08 오후 4:09
    * @see : UserRegisterForm을 사용해야 함
    */
   @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -94,9 +95,9 @@ public class UserController {
 
     // 조건을 통과했으면 유저 객체 생성
     userService.createUser(form);
-    // 그리고 "/user/login"로 리다이렉트
+    // 그리고 로그인페이지로 리다이렉트
     return ResponseEntity.status(HttpStatus.FOUND)
-        .location(URI.create("/api/user/login"))
+        .location(URI.create("http://localhost:8080/api/user/login"))
         .build();
   }
 

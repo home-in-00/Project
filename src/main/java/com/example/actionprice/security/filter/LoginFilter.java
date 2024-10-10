@@ -50,6 +50,8 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword());
 
+    log.info("[class] LoginFilter - [method] attemptAuthentication > authenticationToken : " + authenticationToken);
+
     // rememberMe의 기본적인 기능은 CustomSecurityConfig에서 구현되어 있지만, 추가적인 로직이 필요하다면 이걸로 구현 가능
 //    if (loginForm.isRememberMe()) {
 //    }

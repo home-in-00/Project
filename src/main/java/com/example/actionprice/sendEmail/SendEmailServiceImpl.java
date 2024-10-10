@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+// TODO exception 처리를 구체화할 필요가 있음
 /**
  * @author 연상훈
  * @created 24/10/01 22:50

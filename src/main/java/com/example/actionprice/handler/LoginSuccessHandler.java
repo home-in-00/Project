@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 // TODO admin 페이지 만들고, 블랙리스트 관리하기
+// TODO exception 처리를 구체화할 필요가 있음
 /**
  * 로그인 성공 시 사용되는 핸들러
  * @author : 연상훈
@@ -36,7 +37,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
    * @author : 연상훈
    * @created : 2024-10-06 오후 6:17
    * @updated : 2024-10-06 오후 6:17
-   * @see : 거의 책대로임
+   * @see : 토큰 유효기간 재설정 필요.
    */
   @Override
   public void onAuthenticationSuccess(
@@ -46,7 +47,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
   ) throws IOException
   {
 
-    log.info("Login Success Handler");
+    log.info("----------- Login Success Handler -----------");
 
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
@@ -54,8 +55,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     Map<String, Object> claim = Map.of("username", authentication.getName()); // 키 : username, 밸류 : 인증된 사용자 네임
     log.info("claim : " + claim);
-    String accessToken = jwtUtil.generateToken(claim, 1); // 생성한 클레임(맵)으로 엑세스토큰 발행
-    String refreshToken = jwtUtil.generateToken(claim, 30); // 리프레쉬 토큰 발행
+    String accessToken = jwtUtil.generateToken(claim, 60); // 생성한 클레임(맵)으로 엑세스토큰 발행
+    String refreshToken = jwtUtil.generateToken(claim, 60 * 3); // 리프레쉬 토큰 발행
 
     // 추후 리프레시토큰을 통한 블랙리스트 관리를 위한 로직. 하지만 그건 admin 페이지가 생기고 나서야 가능함.
 //    String username = authentication.getName();
@@ -69,6 +70,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     Map<String, String> keyMap = Map.of("access_token", accessToken,"refresh_token", refreshToken); // map 형태로 토큰 정보를 저장
 
     String jsonStr = gson.toJson(keyMap); // json에 토큰 정보를 전달
+
+    log.info("Login Success Handler : " + jsonStr);
 
     response.getWriter().println(jsonStr); // response(json 형태)의 writer에 토큰 정보 추가
   }

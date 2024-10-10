@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 import com.example.actionprice.util.JWTUtil;
 
+// TODO 토큰 유효시간 재설정
 /**
  * 리프레시 토큰 체크 필터
  * @author : 연상훈
@@ -57,14 +58,14 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
     // 전송된 json에서 accessToken과 refreshToken을 얻어온다
     Map<String, String> tokens = parseRequestJSON(request);
 
-    String accessToken = tokens.get("access_token");
-    String refreshToken = tokens.get("refresh_token");
+    String access_token = tokens.get("access_token");
+    String refresh_token = tokens.get("refresh_token");
 
-    log.info("access token: " + accessToken);
-    log.info("refresh token: " + refreshToken);
+    log.info("access_token : " + access_token);
+    log.info("refresh_token : " + refresh_token);
 
     try{
-      checkAccessToken(accessToken);
+      checkAccessToken(access_token);
     }
     catch(RefreshTokenException e){
       e.sendResponseError(response);
@@ -74,13 +75,13 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
     Map<String, Object> refreshClaims = null;
 
     try{
-      refreshClaims = checkRefreshToken(refreshToken);
+      refreshClaims = checkRefreshToken(refresh_token);
       log.info("refresh claims: " + refreshClaims);
 
       // refresh token의 유효시간이 얼마 남지 않은 경우
       Integer exp = (Integer) refreshClaims.get("exp");
 
-      Date expTime = new Date(Instant.ofEpochMilli(exp).toEpochMilli() * 1000);
+      Date expTime = new Date(Instant.ofEpochMilli(exp).toEpochMilli() * 1000 * 60 * 60);
       Date current = new Date(System.currentTimeMillis());
 
       // 만료 시간과 현재 시간의 간격 계산
@@ -95,13 +96,13 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
       String username = (String) refreshClaims.get("username");
 
       // 이 상태까지 오면 무조건 access token은 새로 생성
-      String accessTokenValue = jwtUtil.generateToken(Map.of("username", username), 1);
-      String refreshTokenValue = tokens.get("refreshToken");
+      String accessTokenValue = jwtUtil.generateToken(Map.of("username", username), 60);
+      String refreshTokenValue = tokens.get("refresh_token");
 
       // refresh token도 3일도 안 남았다면
-      if(gapTime < (1000 * 60 * 60 * 24 * 3)){
+      if(gapTime < (60)){
         log.info("new refresh token required");
-        refreshTokenValue = jwtUtil.generateToken(Map.of("username", username), 30);
+        refreshTokenValue = jwtUtil.generateToken(Map.of("username", username), 60 * 3);
       }
 
       log.info("results of refreshing tokens");
