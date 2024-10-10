@@ -43,7 +43,6 @@ dependencies {
     implementation 'io.projectreactor:reactor-core:3.4.18' // flux
     implementation 'org.springframework.boot:spring-boot-starter-mail' // email
     implementation 'com.google.code.gson:gson:2.10.1' // gson
-    // implementation 'com.google.cloud:spring-cloud-gcp-starter' // 추가적인 세팅 필요. 세팅 없이 시작하려니 오류 발생함
 
     runtimeOnly 'mysql:mysql-connector-java:8.0.30'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2' // jwt
@@ -60,13 +59,6 @@ dependencies {
     testImplementation 'mysql:mysql-connector-java:8.0.30'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
-
-// dependencyManagement {
-//     imports {
-//         mavenBom "com.google.cloud:spring-cloud-gcp-dependencies:${springCloudGcpVersion}"
-//         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-//     }
-// }
 
 tasks.named('test') {
     useJUnitPlatform()
