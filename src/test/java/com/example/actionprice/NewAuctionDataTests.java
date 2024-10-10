@@ -15,7 +15,7 @@ public class NewAuctionDataTests
 
 
     @Test
-    void auctionDataPrintTest() throws Exception {
+    void newAuctionDataPrintTest() throws Exception {
         ResponseEntity<String> responseEntity = newAuctionDataFetcher.getNewAuctionData_String("20241009");
         System.out.println(responseEntity.toString());
     }
