@@ -6,4 +6,6 @@ public interface UserService {
 
   User createUser(UserRegisterForm userRegisterForm);
 
+  boolean checkUserExists(String username);
+
 }

@@ -1,5 +1,6 @@
 package com.example.actionprice.sendEmail;
 
+import com.example.actionprice.exception.InvalidEmailAddressException;
 import jakarta.transaction.Transactional;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -45,8 +46,18 @@ public class SendEmailServiceImpl implements SendEmailService {
 	private final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	private final int CODE_LENGTH = 8;
 
+	/**
+	 * 회원가입 시 이메일 인증을 위한 인증 코드 발송 메서드
+	 * @author 연상훈
+	 * @created 2024-10-10 오전 11:13
+	 * @updated 2024-10-10 오전 11:13
+	 * @see :
+	 * src/main/java/com/example/actionprice/exception/InvalidEmailAddressException.java
+	 * src/main/java/com/example/actionprice/advice/CustomRestAdvice.java
+	 * https://www.knotend.com/g/a#N4IgzgpgTglghgGxgLwnARgiAxA9lAWxAC5QA7XAEwjBPIEYAmRgVkYBZ6AOOkBDCAhIhALuOAVLsA+4wAJAOD2BCwZABfADQgy7AJwAGAMwA2DU1790g4SMAf3bLmAcFqniJIqYBcJwDXjAfiWqyAdh1cNDUYfLWMBIWIQAHkvNQ0Weno9PXYfMNMIkHk7QAHJqRZAEN6pHMAKhs8VNXp2FnZgrRZ0s0iADViyYJ16Qy4G0j5w4RiK9RZAxK0ePpMmkFbh0a4fdi4jKYHIwAmBwB0O2UBIOqlAEbX7SWs2vS16H0WORszABjrnKUAHGqlAB5HAH3bAA5qpQAtVtsCND4fIleqBpplACATcikgEZBwCvNeVvPF2OwdEC9LdhAAzRCQNo9apAiaYyJDbxAnSseok2ZtHRsDQpPT0GnwqRiQA7Qzk2okDHpGIyaQ4pIAM8cA3V2ACha2lclnp9OwaQAXKAAVwgdJYWkYXD0aTWGWEEAAHgBjCAAB0VMFwZCkgAyZwA1nUoKhBKABzGgkADaXsqzDYnB43k0ugMRgAuspfeptPpDIwQOT-IE6iBI9GQ3GjN4qjU6g102o-AEgiFE3EEkkUmlC2R4rzq+X2n4utwC1GKw3Uk3qmN6MTa7naiEGt4FksVgnax1Wz0m+PlhGOyM+8TvOdLtcFbWF5OmwCgSC08uNzKbkiaqj0cfowfgfRR2oCSwiTxa3ej+S-FT29Hn6+m3pAUmRZWsKR-JteUZYCbzUIDGXYZkmxlRD5VgsgoP5QVvHpLUdRrcMKjNBAEAAdRgShFQACxIeh6VUYiEAACQgGA3SoxUSGWBjBAQAAFOBKEoGAyDdEh6LUKgICiKBqFgUTvT9VgOG4HtYzDBMkxLVMLy7NIc2qYdqW8GdukfFdDH7IM1F3bM1FPLd90CQ8H33S80R8DFvH-EJrN8b9NXM+CQMgpJoOwotFlQlJAM1bVdTTRQgA
+	 */
 	@Override
-	public String sendVerificationEmail(String email) {
+	public boolean sendVerificationEmail(String email) throws Exception {
 
 		// 해당 이메일로 발급 받은 verificationEmail이 있으면 가져오고, 없으면 null 반환
 		VerificationEmail verificationEmail = verificationEmailRepository.findById(email).orElse(null);
@@ -59,7 +70,8 @@ public class SendEmailServiceImpl implements SendEmailService {
 				verificationEmail.setVerificationCode(verificationCode);
 				verificationEmailRepository.save(verificationEmail); // 업데이트
 			} else{
-				return "최근에 발송된 인증코드가 존재합니다."; // 5분이 지나지 않았으면, 다시 보내지 않고 그냥 발송된 것으로 넘어감
+				log.info("최근에 발송된 인증코드가 존재합니다."); // 5분이 지나지 않았으면, 다시 보내지 않고 그냥 발송된 것으로 넘어감
+				return false;
 			}
 		} else {
 			// 존재하지 않는 경우 새로 생성
@@ -70,22 +82,18 @@ public class SendEmailServiceImpl implements SendEmailService {
 			verificationEmailRepository.save(verificationEmail); // 새로 저장
 		}
 
-		// 이메일 발송
-		try{
-			String subject = "[actionPrice] 회원가입 인증코드입니다.";
-			String content = String.format("""
-							인증코드
-							-------------------------------------------
-							%s
-							-------------------------------------------
-							""", verificationCode);
+		// 이메일 발송.
+		String subject = "[actionPrice] 회원가입 인증코드입니다.";
+		String content = String.format("""
+						인증코드
+						-------------------------------------------
+						%s
+						-------------------------------------------
+						""", verificationCode);
 
-			sendSimpleMail(email, subject, content);
-			return "인증코드가 성공적으로 발송되었습니다.";
-		}
-		catch(Exception e){
-			return "인증코드 발송에 실패했습니다.";
-		}
+		sendSimpleMail(email, subject, content); // 오류 발생 시 메서드가 자체적으로 처리하니까 별도의 오류 처리 불필요
+		return true;
+
 	}
 
 	@Override
@@ -106,16 +114,20 @@ public class SendEmailServiceImpl implements SendEmailService {
 	}
 
 	/**
+	 * 단순 이메일 발송 메서드
 	 * @author 연상훈
 	 * @created 24/10/01 22:50
 	 * @updated 24/10/02 11:46
 	 * @param : receiverEmail = 받는 사람의 이메일
 	 * @param : subject = 보낼 이메일의 제목
 	 * @param : content = 보낼 이메일의 내용
-	 * @throws Exception
-	 * @info 간단 이메일 발송 로직. 오류를 대충 처리했음
+	 * @throws :  Exception, InvalidEmailAddressException
+	 * @info : 이 메서드 실행 중에 오류가 발생하면 자체적으로 InvalidEmailAddressException 으로 던지기 때문에 별도의 오류 처리가 필요 없음.
+	 * @see :
+	 * src/main/java/com/example/actionprice/exception/InvalidEmailAddressException.java
+	 * src/main/java/com/example/actionprice/advice/CustomRestAdvice.java
 	 */
-	public boolean sendSimpleMail(String receiverEmail, String subject, String content) throws Exception{
+	public boolean sendSimpleMail(String receiverEmail, String subject, String content) throws Exception {
 		
 		SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 		simpleMailMessage.setFrom(senderEmail);
@@ -127,7 +139,7 @@ public class SendEmailServiceImpl implements SendEmailService {
 			javaMailSender.send(simpleMailMessage);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
+			throw new InvalidEmailAddressException(receiverEmail + "is not a valid email address.");
 		}
 		
 		return true;		

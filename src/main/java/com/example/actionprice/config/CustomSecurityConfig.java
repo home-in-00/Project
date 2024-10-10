@@ -71,7 +71,7 @@ public class CustomSecurityConfig {
     /**
      * @author : 연상훈
      * @created : 2024-10-05 오후 9:27
-     * @updated : 2024-10-06 오후 1:23
+     * @updated : 2024-10-10 오전 9:26
      * @see : 로직을 일부 개편함.
      */
     @Bean
@@ -111,10 +111,10 @@ public class CustomSecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/user/login").anonymous() // 로그인을 안 한 사람만 로그인 창으로 이동 가능
+                        .requestMatchers("/api/user/logout").authenticated() // 로그인을 한 사람만 로그아웃 창으로 이동 가능
                         .requestMatchers(
                                 "/",
-                                "/api/user/login",
-                                "/api/user/logout",
                                 "/api/user/register",
                                 "/api/user/sendVerificationCode",
                                 "/api/user/checkVerificationCode",
@@ -125,7 +125,8 @@ public class CustomSecurityConfig {
             .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class) // LoginFilter가 내가 추가하는 필터고, UsernamePasswordAuthenticationFilter.class는 기본 내장 필터. UsernamePasswordAuthenticationFilter보다 LoginFilter를 먼저 실행시키겠다
             .addFilterBefore(tokenCheckFilter(), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(new RefreshTokenFilter("/api/user/generate/refreshToken", jwtUtil), TokenCheckFilter.class)
-            .rememberMe(httpSecurityRememberMeConfigurer -> {httpSecurityRememberMeConfigurer.rememberMeParameter("rememberMe")
+            .rememberMe(httpSecurityRememberMeConfigurer -> {httpSecurityRememberMeConfigurer.key("REMEMBERME") // 리멤버미 파라미터 이름
+                .rememberMeParameter("rememberMe") // 리멤버미 쿠키 이름
                 .tokenRepository(persistentTokenRepository()) // persistentTokenRepository
                 .tokenValiditySeconds(3600);})
             .formLogin((formLogin) -> formLogin.loginPage("/api/user/login")
@@ -133,9 +134,8 @@ public class CustomSecurityConfig {
                     .passwordParameter("password")
                     .failureUrl("/api/user/login") // TODO failureForwardUrl는 기존 url을 유지하면서 이동. 거기에 failureHandler를 쓰면 로그인 실패 횟수를 체크할 수 있을 것 같은데?
                     .loginProcessingUrl("/api/user/login")
-                    .defaultSuccessUrl("/", true)
-                    .permitAll())
-            .logout((logout) -> logout.logoutSuccessUrl("/api/user/login").permitAll());
+                    .defaultSuccessUrl("/", true))
+            .logout((logout) -> logout.logoutUrl("/api/user/logout").logoutSuccessUrl("/api/user/login"));
         return http.build();
 
     }

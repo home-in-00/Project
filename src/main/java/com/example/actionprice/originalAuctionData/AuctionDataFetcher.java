@@ -157,7 +157,6 @@ public class AuctionDataFetcher {
                 auctionEncodedKey,
                 TYPE,
                 START_INDEX,
-
                 END_INDEX,
                 DELNG_DE,
                 URLEncoder.encode(WHSAL_MRKT_NM,"UTF-8")

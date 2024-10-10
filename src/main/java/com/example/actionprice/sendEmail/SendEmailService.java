@@ -6,6 +6,6 @@ package com.example.actionprice.sendEmail;
  * @updated : 2024-10-06 오후 9:17
  */
 public interface SendEmailService {
-  String sendVerificationEmail(String email);
+  boolean sendVerificationEmail(String email) throws Exception;
   String checkVerificationCode(String email, String verificationCode);
 }
