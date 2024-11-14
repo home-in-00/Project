@@ -18,8 +18,11 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 /**
  * 모든 컨트롤러에서 발생하는 예외를 처리함
@@ -32,6 +35,43 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Log4j2
 public class CustomRestAdvice {
 
+  // commons
+  // 400 Bad Request - 잘못된 요청 예외 처리
+  @ExceptionHandler({ IllegalArgumentException.class, MethodArgumentTypeMismatchException.class })
+  public ResponseEntity<String> handleBadRequest(Exception ex) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body("잘못된 요청입니다: " + ex.getMessage());
+  }
+
+  // 404 Not Found - 경로를 찾을 수 없는 예외 처리
+  @ExceptionHandler(NoHandlerFoundException.class)
+  public ResponseEntity<String> handleNotFound(NoHandlerFoundException ex) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body("요청한 경로를 찾을 수 없습니다.");
+  }
+
+  // 409 Conflict - 데이터 무결성 예외 처리
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  public ResponseEntity<String> handleConflict(DataIntegrityViolationException ex) {
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body("데이터 무결성 위반입니다.");
+  }
+
+  // 500 Internal Server Error - 일반적인 예외 처리
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<String> handleServerError(Exception ex) {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
+        body("서버 오류가 발생했습니다.");
+  }
+
+  // 422 Unprocessable Entity - 유효성 검사 실패 처리
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+        .body("유효성 검증에 실패했습니다.");
+  }
+
+  // customs
   /**
    * BindException(컨트롤러에서의 유효성 검사)를 커스텀하는 handler
    * @author : 연상훈
@@ -53,20 +93,6 @@ public class CustomRestAdvice {
     }
 
     return ResponseEntity.unprocessableEntity()
-        .body(errorMap);
-  }
-
-  @ExceptionHandler(DataIntegrityViolationException.class)
-  public ResponseEntity<Map<String, String>> handlerFKException(Exception e) {
-
-    log.error(e);
-
-    Map<String, String> errorMap = new HashMap<>();
-
-    errorMap.put("time", "" + System.currentTimeMillis());
-    errorMap.put("message", "constraint fails");
-
-    return ResponseEntity.status(HttpStatus.CONFLICT)
         .body(errorMap);
   }
 
@@ -93,44 +119,24 @@ public class CustomRestAdvice {
         .body(e.getMessage());
   }
 
-  // 부정한 방법으로 존재하지 않는 user 조회 시 발생하는 에러
-  @ExceptionHandler(UserNotFoundException.class)
-  public ResponseEntity<String> handlerUserNotFoundException(UserNotFoundException e) {
-    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        .body(e.getMessage());
-  }
-
-  // 부정한 방법으로 존재하지 않는 post 조회 시 발생하는 에러
-  @ExceptionHandler(PostNotFoundException.class)
-  public ResponseEntity<String> handlerPostNotFoundException(PostNotFoundException e) {
-    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        .body(e.getMessage());
-  }
-
-  // 부정한 방법으로 존재하지 않는 댓글 조회 시 발생하는 에러
-  @ExceptionHandler(CommentNotFoundException.class)
-  public ResponseEntity<String> handlerCommentNotFoundException(CommentNotFoundException e) {
-    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        .body(e.getMessage());
-  }
-
-  // 존재하지 않는 카테고리를 부정한 방법으로 조회 시
-  @ExceptionHandler(InvalidCategoryException.class)
-  public ResponseEntity<String> handlerInvalidCategoryException(InvalidCategoryException e) {
+  // 부정한 방법으로 존재하지 않는 값을 조회 시 발생하는 에러
+  @ExceptionHandler({
+      UserNotFoundException.class,
+      PostNotFoundException.class,
+      CommentNotFoundException.class,
+      InvalidCategoryException.class
+  })
+  public ResponseEntity<String> handlerUserNotFoundException(Exception e) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND)
         .body(e.getMessage());
   }
 
-  // 부정 접근(권한 없는 접근) 시
-  @ExceptionHandler(AccessDeniedException.class)
-  public ResponseEntity<String> handlerAccessDeniedException(AccessDeniedException e) {
-    return ResponseEntity.status(HttpStatus.FORBIDDEN)
-        .body(e.getMessage());
-  }
-
-  // 기타 보안 인증에 걸렸을 때
-  // 어지간한 건 메서드에 붙은 로직 선에서 알아서 처리됨
-  @ExceptionHandler({AuthenticationException.class, InsufficientAuthenticationException.class})
+  // 부정 접근 등
+  @ExceptionHandler({
+      AccessDeniedException.class,
+      AuthenticationException.class,
+      InsufficientAuthenticationException.class
+  })
   public ResponseEntity<String> handlerAuthenticationError(Exception e) {
     return ResponseEntity.status(HttpStatus.FORBIDDEN)
         .body(e.getMessage());
@@ -142,7 +148,6 @@ public class CustomRestAdvice {
     return ResponseEntity.status(HttpStatus.CONFLICT)
         .body(e.getMessage());
   }
-
 
   // 엑세스 토큰 에러
   @ExceptionHandler(AccessTokenException.class)

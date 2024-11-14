@@ -26,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 /**
  * 로그인 필터
@@ -75,7 +76,8 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
    * @info userDetailService.loadUserByUsername에서 user 계정 lock 상태에 따라 잠금된 상태로 반환함. 그렇게 해서 계정 잠금 구현
    */
   @Override
-  public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+  public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+      throws AuthenticationException, HttpRequestMethodNotSupportedException {
     log.info("[class] LoginFilter - [method] attemptAuthentication > 시작");
 
     // get 요청으로 들어오면 거부함
@@ -83,7 +85,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
       log.info("GET method doesn't supported");
 
-      return null;
+      throw new HttpRequestMethodNotSupportedException("GET");
     }
     
     UserLoginForm loginForm = parseRequestJSON(request, UserLoginForm.class);

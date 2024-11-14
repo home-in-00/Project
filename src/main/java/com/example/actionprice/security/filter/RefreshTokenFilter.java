@@ -55,22 +55,10 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
       // 토큰에서 토큰의 내용을 추출함
       String tokenStr = accessTokenService.extractTokenInHeaderStr(headerStr);
 
-      try {
-        // 토큰 내용에서 username을 추출하면서 유효성(느슨한 검사) 검사 진행
-        // accessToken을 통해 refreshToken을 간접적으로 검사하기 때문에 엑세스 토큰은 느슨하게, 리프레시 토큰은 엄격하게 검사
-        String username = accessTokenService.validateAccessTokenAndExtractUsername_leniently(tokenStr);
-        log.info("username : " + username);
-      } catch (ExpiredJwtException e) {
-        // 리프레시 토큰의 만료에 대한 검사는 메서드 내부에서 알아서 진행함. 이건 엑세스 토큰 만료에 대한 것
-        // 엑세스 토큰 만료 시 재발행. 그 외의 유효성 검사는 모두 진행함
-        String username = e.getClaims().getSubject();
-        String jsonStr = accessTokenService.issueAccessToken(username);
-
-        // 그리고 토큰 값을 reponse에 담아줌
-        response.getWriter().println(jsonStr);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-      }
+      // 토큰 내용에서 username을 추출하면서 유효성(느슨한 검사) 검사 진행
+      // accessToken을 통해 refreshToken을 간접적으로 검사하기 때문에 엑세스 토큰은 느슨하게, 리프레시 토큰은 엄격하게 검사
+      String username = accessTokenService.validateAccessTokenAndExtractUsername_strictly(tokenStr);
+      log.info("username : " + username);
     } catch(RefreshTokenException e){
       request.setAttribute("filter.exception", e);
     } catch(AccessTokenException e){
