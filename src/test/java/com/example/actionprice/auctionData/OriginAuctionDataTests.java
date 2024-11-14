@@ -16,7 +16,6 @@ import java.util.concurrent.CountDownLatch;
 @Log4j2
 public class OriginAuctionDataTests {
 
-
     @Autowired
     private OriginAuctionDataFetcher originAuctionDataFetcher;
 
@@ -36,15 +35,16 @@ public class OriginAuctionDataTests {
     /**
      * @author 연상훈
      * @created 2024-11-09 오후 11:19
-     * @info 7~9일 데이터 받음
+     * @updated 2024-11-14 오전 10:56 [연상훈] : 데이터 저장 완료
      */
     @Test
     void auctionDataFluxTest() throws Exception {
         String year = "2024";
         String month = "11";
-        int endDay = 9;
+        int startDay = 10;
+        int endDay = 14;
 
-        for (int i = 7; i <= endDay; i++) {
+        for (int i = startDay; i <= endDay; i++) {
             // 날짜 형식 맞추기
             String day = String.format("%02d", i);
             String date = String.format("%s-%s-%s", year, month, day);

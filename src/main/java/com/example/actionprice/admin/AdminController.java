@@ -65,8 +65,8 @@ public class AdminController {
   public Map<String, Object> setBlockUser(@PathVariable("username") String selected_username) {
 
     boolean result = refreshTokenService.setBlockUserByUsername(selected_username);
-    String messege = result ? "blocked" : "unblocked";
-    return Map.of("message", messege, "isBlocked", result);
+    String message = result ? "blocked" : "unblocked";
+    return Map.of("message", message, "isBlocked", result);
   }
 
   /**
@@ -82,10 +82,10 @@ public class AdminController {
   public Map<String, String> resetUser(@PathVariable("username") String selected_username) {
     log.info("delete target : {}", selected_username);
     refreshTokenService.resetRefreshToken(selected_username);
-    String messege = String.format("user(%s)'s refresh token was reset", selected_username);
+    String message = String.format("user(%s)'s refresh token was reset", selected_username);
     return Map.of(
         "selected_username", selected_username,
-        "messege", messege
+        "message", message
     );
   }
 
